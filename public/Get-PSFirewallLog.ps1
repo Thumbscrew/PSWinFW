@@ -134,6 +134,8 @@ function Get-PSFirewallLog {
                         $fwEvent | Add-Member NoteProperty -Name $member.Name -Value $split[$member.Value]
                     }
 
+                    $fwEvent.pstypenames.insert(0, 'PSWinFW.Log.Event')
+
                     $fwEvent
                 }
             }
