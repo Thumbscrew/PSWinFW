@@ -15,17 +15,20 @@
                         <Width>8</Width>
                     </TableColumnHeader>
                     <TableColumnHeader> <!-- Action -->
-                        <Width>5</Width>
+                        <Width>6</Width>
                     </TableColumnHeader>
                     <TableColumnHeader> <!-- Protocol -->
+                        <Label>Prot</Label>
                         <Width>4</Width>
                     </TableColumnHeader>
                     <TableColumnHeader/> <!-- SourceIP -->
                     <TableColumnHeader/> <!-- Destination IP -->
                     <TableColumnHeader> <!-- SourcePort -->
+                        <Label>SrcPt</Label>
                         <Width>5</Width>
                     </TableColumnHeader>
                     <TableColumnHeader> <!-- DestinationPort -->
+                        <Label>DstPt</Label>
                         <Width>5</Width>
                     </TableColumnHeader>
                     <TableColumnHeader/> <!-- Size -->
