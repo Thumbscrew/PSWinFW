@@ -8,7 +8,7 @@ A powershell module for retrieving Windows Firewall logs and displaying them in 
 ## **Installation**
 ```
 git clone https://github.com/Thumbscrew/PSWinFW.git
-Import-Module PSWinFW\PSWinFW.psm1
+Import-Module PSWinFW
 ```
 ## **Example Usage**
 Get last 1000 Windows Firewall log lines at a specific path:
