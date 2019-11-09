@@ -16,9 +16,9 @@ function Get-PSFirewallLog {
         [string]
         $LogFileName,
 
-        # Retrieve a profile's log using registry settings of the local machine
+        # Retrieve a profile's log using registry settings of the local or remote machine
         [Parameter(Mandatory = $true, ParameterSetName = 'auto')]
-        [Parameter(ParameterSetName = 'remote')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'remote')]
         [ValidateSet('Public','Private','Domain')]
         [string]
         $LogProfile,
@@ -29,7 +29,7 @@ function Get-PSFirewallLog {
         $Tail = 0,
 
         # ComputerName to retrieve log from
-        [Parameter(Mandatory = $false, ParameterSetName = 'remote')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'remote')]
         [string]
         $ComputerName
     )
