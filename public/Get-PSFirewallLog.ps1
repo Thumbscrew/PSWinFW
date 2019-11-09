@@ -16,9 +16,9 @@ function Get-PSFirewallLog {
         [string]
         $LogFileName,
 
-        # Retrieve a profile's log using registry settings of the local machine
+        # Retrieve a profile's log using registry settings of the local or remote machine
         [Parameter(Mandatory = $true, ParameterSetName = 'auto')]
-        [Parameter(ParameterSetName = 'remote')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'remote')]
         [ValidateSet('Public','Private','Domain')]
         [string]
         $LogProfile,
@@ -28,23 +28,8 @@ function Get-PSFirewallLog {
         [int]
         $Tail = 0,
 
-        # Include extended TCP information (TCP Flags, TCP Sequence Number, TCP ACK Number, TCP Window Size). Defaults to false.
-        [Parameter(Mandatory = $false)]
-        [switch]
-        $IncludeTcpInfo,
-
-        # Include extended ICMP information (ICMP Type and Code). Defaults to false.
-        [Parameter(Mandatory = $false)]
-        [switch]
-        $IncludeIcmpInfo,
-
-        # Include Info field. Defaults to false.
-        [Parameter(Mandatory = $false)]
-        [switch]
-        $IncludeInfo,
-
         # ComputerName to retrieve log from
-        [Parameter(Mandatory = $false, ParameterSetName = 'remote')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'remote')]
         [string]
         $ComputerName
     )
@@ -96,33 +81,15 @@ function Get-PSFirewallLog {
                     "SourcePort" = 6
                     "DestinationPort" = 7
                     "Size" = 8
+                    "TcpFlags" = 9
+                    "TcpSyn" = 10
+                    "TcpAck" = 11
+                    "TcpWin" = 12
+                    "IcmpType" = 13
+                    "IcmpCode" = 14
+                    "Info" = 15
+                    "Path" = 16
                 }
-
-                if($IncludeTcpInfo) {
-                    $tcpMembers = @{
-                        "TcpFlags" = 9
-                        "TcpSyn" = 10
-                        "TcpAck" = 11
-                        "TcpWin" = 12
-                    }
-
-                    $members += $tcpMembers
-                }
-
-                if($IncludeIcmpInfo) {
-                    $icmpMembers = @{
-                        "IcmpType" = 13
-                        "IcmpCode" = 14
-                    }
-
-                    $members += $icmpMembers
-                }
-
-                if($IncludeInfo) {
-                    $members += @{ "Info" = 15 }
-                }
-
-                $members += @{ "Path" = 16 }
 
                 $log | ForEach-Object {
                     $line = $_
@@ -133,6 +100,8 @@ function Get-PSFirewallLog {
                     foreach($member in $members.GetEnumerator() | Sort-Object Value) {
                         $fwEvent | Add-Member NoteProperty -Name $member.Name -Value $split[$member.Value]
                     }
+
+                    $fwEvent.pstypenames.insert(0, 'PSWinFW.Log.Event')
 
                     $fwEvent
                 }

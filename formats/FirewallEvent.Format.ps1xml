@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>FirewallEvent</Name>
+            <ViewSelectedBy>
+                <TypeName>PSWinFW.Log.Event</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader> <!-- Date -->
+                        <Width>10</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader> <!-- Time -->
+                        <Width>8</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader> <!-- Action -->
+                        <Width>6</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader> <!-- Protocol -->
+                        <Label>Prot</Label>
+                        <Width>4</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader/> <!-- SourceIP -->
+                    <TableColumnHeader/> <!-- Destination IP -->
+                    <TableColumnHeader> <!-- SourcePort -->
+                        <Label>SrcPt</Label>
+                        <Width>5</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader> <!-- DestinationPort -->
+                        <Label>DstPt</Label>
+                        <Width>5</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader/> <!-- Size -->
+                    <TableColumnHeader> <!-- Path -->
+                        <Width>7</Width>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Date</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Time</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Action</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Protocol</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>SourceIP</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>DestinationIP</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>SourcePort</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>DestinationPort</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Size</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Path</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
