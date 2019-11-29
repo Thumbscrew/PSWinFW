@@ -23,20 +23,24 @@ function Get-PSFirewallLog {
         [string]
         $LogProfile,
 
-        # Number of firewall events to retrieve. Defaults to 0 (All events).
+        # Number of firewall events to retrieve. Defaults to -1 (All events).
         [Parameter(Mandatory = $false)]
         [int]
-        $Tail = 0,
+        $Tail = -1,
 
         # ComputerName to retrieve log from
         [Parameter(Mandatory = $true, ParameterSetName = 'remote')]
         [string]
-        $ComputerName
+        $ComputerName,
+
+        # Follow the log
+        [Parameter(Mandatory = $false)]
+        [switch]
+        $Wait
     )
     
     begin {
         if($PSCmdlet.ParameterSetName -eq 'auto') {
-            # $Path = [Environment]::ExpandEnvironmentVariables((Get-ItemProperty -Path ("HKLM:\SOFTWARE\Policies\Microsoft\WindowsFirewall\{0}Profile\Logging" -f $LogProfile) -Name "LogFilePath").LogFilePath)
             $Path = Get-PSFirewallLogPath -LogProfile $LogProfile -Verbose:$VerbosePreference
         }
         elseif($PSCmdlet.ParameterSetName -eq 'remote') {
@@ -59,55 +63,56 @@ function Get-PSFirewallLog {
         }
 
         if(Test-Path $logPath) {
-            $log = Get-Content $logPath
 
-            if($log.Length -gt 0) {
-                # Remove header lines
-                $log = $log[5..($log.Length - 1)]
-
-                if($Tail -gt 0) {
-                    $startIndex = if($Tail -lt $log.Length) { $log.Length - $Tail } else { 0 }
-                    
-                    $log = $log[$startIndex..($log.Length - 1)]
-                }
-
-                $members = @{
-                    "Date" = 0
-                    "Time" = 1
-                    "Action" = 2
-                    "Protocol" = 3
-                    "SourceIP" = 4
-                    "DestinationIP" = 5
-                    "SourcePort" = 6
-                    "DestinationPort" = 7
-                    "Size" = 8
-                    "TcpFlags" = 9
-                    "TcpSyn" = 10
-                    "TcpAck" = 11
-                    "TcpWin" = 12
-                    "IcmpType" = 13
-                    "IcmpCode" = 14
-                    "Info" = 15
-                    "Path" = 16
-                }
-
-                $log | ForEach-Object {
-                    $line = $_
-                    $split = $line -split ('\s')
-
-                    $fwEvent = New-Object PSCustomObject
-
-                    foreach($member in $members.GetEnumerator() | Sort-Object Value) {
-                        $fwEvent | Add-Member NoteProperty -Name $member.Name -Value $split[$member.Value]
-                    }
-
-                    $fwEvent.pstypenames.insert(0, 'PSWinFW.Log.Event')
-
-                    $fwEvent
-                }
+            $members = @{
+                "Date" = 0
+                "Time" = 1
+                "Action" = 2
+                "Protocol" = 3
+                "SourceIP" = 4
+                "DestinationIP" = 5
+                "SourcePort" = 6
+                "DestinationPort" = 7
+                "Size" = 8
+                "TcpFlags" = 9
+                "TcpSyn" = 10
+                "TcpAck" = 11
+                "TcpWin" = 12
+                "IcmpType" = 13
+                "IcmpCode" = 14
+                "Info" = 15
+                "Path" = 16
             }
-            else {
-                Write-Error "File $logPath has zero length."
+
+            $count = (Get-Content -Path $logPath).Count
+
+            # Check if outputting all events from the log and cut the first 5 lines that aren't events.
+            if(($Tail -lt 0) -or ($Tail -gt $count)) {
+                $Tail = $count - 5
+            }
+
+            Write-Verbose "Log has $count lines. Retrieving $Tail lines."
+
+            $c = "Get-Content -Path $logPath -Tail $Tail"
+
+            if($Wait) {
+                $c = "$c -Wait"
+            }
+
+            Invoke-Expression $c | ForEach-Object {
+                $line = $_
+
+                $split = $line -split ('\s')
+
+                $fwEvent = New-Object PSCustomObject
+
+                foreach($member in $members.GetEnumerator() | Sort-Object Value) {
+                    $fwEvent | Add-Member NoteProperty -Name $member.Name -Value $split[$member.Value]
+                }
+
+                $fwEvent.pstypenames.insert(0, 'PSWinFW.Log.Event')
+
+                $fwEvent
             }
         }
         else {

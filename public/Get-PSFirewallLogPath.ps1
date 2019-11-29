@@ -61,7 +61,7 @@ function Get-PSFirewallLogPath {
             if($statusChanged) {
                 Write-Verbose ("Reverting status of $serviceName Service to {0}." -f $remoteRegistry.Status)
                 # Set-Service -Name $serviceName -ComputerName $ComputerName -Status $remoteRegistry.Status
-                # Need to use Invoke-Command as Set-Service won't stop a service that has dependancies
+                # Need to use Invoke-Command as Set-Service won't stop a service that has dependencies
                 Invoke-Command -ComputerName $ComputerName -ScriptBlock { Stop-Service -Name "RemoteRegistry" }
                 
                 # Verify that service has been restored to its original state.
