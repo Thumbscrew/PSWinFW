@@ -27,3 +27,7 @@ Get Windows Firewall log on a remote computer using the Remote Registry service 
 ```powershell
 Get-PSFirewallLog -LogProfile Public -ComputerName MyRemoteComputer -Verbose
 ```
+Get the last 100 events from the Private profile firewall log and follow the log:
+```powershell
+Get-PSFirewallLog -LogProfile Private -Tail 100 -Wait
+```
