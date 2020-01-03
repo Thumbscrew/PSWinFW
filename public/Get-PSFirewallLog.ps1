@@ -36,7 +36,12 @@ function Get-PSFirewallLog {
         # Follow the log
         [Parameter(Mandatory = $false)]
         [switch]
-        $Wait
+        $Wait,
+
+        # Use local machine's registry setting to infer remote machine's log path
+        [Parameter(Mandatory = $false, ParameterSetName = 'remote')]
+        [switch]
+        $InferPath
     )
     
     begin {
@@ -44,7 +49,13 @@ function Get-PSFirewallLog {
             $Path = Get-PSFirewallLogPath -LogProfile $LogProfile -Verbose:$VerbosePreference
         }
         elseif($PSCmdlet.ParameterSetName -eq 'remote') {
-            $Path = Get-PSFirewallLogPath -LogProfile $LogProfile -ComputerName $ComputerName -Verbose:$VerbosePreference
+            $lpc = "Get-PSFirewallLogPath -LogProfile $LogProfile -ComputerName $ComputerName"
+
+            if($InferPath) {
+                $lpc += " -InferPath"
+            }
+
+            $Path = Invoke-Expression $lpc -Verbose:$VerbosePreference
         }
     }
     
