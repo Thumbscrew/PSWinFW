@@ -1,4 +1,33 @@
 function Get-PSFirewallLogPath {
+    <#
+    .SYNOPSIS
+
+    Retrieves Windows Firewall log path for a given Profile.
+
+    .DESCRIPTION
+
+    Retrieves Windows Firewall log path for a local or remote machine for given Profile.
+
+    .EXAMPLE
+
+    Get-PSFirewallLogPath -LogProfile Domain
+
+    Retrieves path of the specified profile's log from the local machine.
+
+    .EXAMPLE
+
+    Get-PSFirewallLogPath -LogProfile Private -ComputerName MyRemoteComputer
+
+    Retrieves path of the specified profile's log from a remote machine using the Remote Regsitry service.
+
+    .EXAMPLE
+
+    Get-PSFirewallLogPath -LogProfile Domain -ComputerName MyRemoteComputer -InferPath
+
+    Retrieves path of the specified profile's log from a remote machine using registry settings configured on the local machine.
+
+    #>
+
     param(
         # Log Profile to retrieve path for
         [Parameter(Mandatory = $true)]

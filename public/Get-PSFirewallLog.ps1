@@ -1,4 +1,45 @@
 function Get-PSFirewallLog {
+    <#
+    .SYNOPSIS
+
+    Retrieves Windows Firewall log events and returns them as a table.
+
+    .DESCRIPTION
+
+    Retrieves Windows Firewall log events and returns them as a table. Log path can be directly specified or automatically determined based on local or remote registry settings.
+
+    .EXAMPLE
+
+    Get-PSFirewallLog -Path C:\Windows\system32\logfiles\firewall\pfirewall.log -Tail 1000
+
+    Get last 1000 Windows Firewall log lines at a specific path.
+
+    .EXAMPLE
+
+    Get-PSFirewallLog -LogDirectory C:\Windows\system32\logfiles\firewall\ -LogFileName domainfw.log
+
+    Get Windows Firewall log by specifying the log directory and filename separately.
+
+    .EXAMPLE
+
+    Get-PSFirewallLog -LogProfile Domain
+
+    Get Windows Firewall log by retrieving the path automatically from the registry on the local machine.
+
+    .EXAMPLE
+
+    Get-PSFirewallLog -LogProfile Public -ComputerName MyRemoteComputer -Verbose
+
+    Get Windows Firewall log on a remote computer using the Remote Registry service to get the log path.
+
+    .EXAMPLE
+
+    Get-PSFirewallLog -LogProfile Public -ComputerName MyRemoteComputer -InferPath
+
+    Get Windows Firewall log on a remote computer using the path configured in the local machine's registry (converted to a UNC path).
+    
+    #>
+
     [CmdletBinding(DefaultParameterSetName = 'direct')]
     param (
         # Path to firewall log. Defaults to $ENV:SystemRoot\system32\LogFiles\Firewall\pfirewall.log if parameter not supplied.
